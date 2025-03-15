@@ -1,0 +1,354 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#notification-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 380px;
+    max-height: calc(100vh - 40px);
+    overflow-y: hidden;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 14px 12px;
+    border-radius: 24px;
+    position: relative;
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.notification::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.85);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    z-index: -1;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.notification-app-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8.5px;
+    background: #333;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    padding-right: 8px;
+    margin-bottom: 2px;
+}
+
+.notification-title {
+    flex: 1;
+    font-weight: 590;
+    font-size: 15px;
+    line-height: 1.333333333;
+    letter-spacing: -0.015333333em;
+    color: rgba(0, 0, 0, 0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notification-time {
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.538461538;
+    color: rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+}
+
+.notification-message {
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.333333333;
+    letter-spacing: -0.015333333em;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+
+.notification.success::before {
+    background: rgba(48, 209, 88, 0.85);
+}
+
+.notification.error::before {
+    background: rgba(255, 69, 58, 0.85);
+}
+
+.notification.warning::before {
+    background: rgba(255, 159, 10, 0.85);
+}
+
+.notification.info::before {
+    background: rgba(10, 132, 255, 0.85);
+}
+
+.notification.success .notification-title,
+.notification.success .notification-message,
+.notification.error .notification-title,
+.notification.error .notification-message,
+.notification.warning .notification-title,
+.notification.warning .notification-message,
+.notification.info .notification-title,
+.notification.info .notification-message {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.notification.success .notification-time,
+.notification.error .notification-time,
+.notification.warning .notification-time,
+.notification.info .notification-time {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+@media (prefers-color-scheme: dark) {
+    .notification-title {
+        color: rgba(255, 255, 255, 0.95);
+    }
+    
+    .notification-message {
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .notification-time {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .notification.success::before {
+        background: rgba(48, 209, 88, 0.75);
+    }
+    
+    .notification.error::before {
+        background: rgba(255, 69, 58, 0.75);
+    }
+    
+    .notification.warning::before {
+        background: rgba(255, 159, 10, 0.75);
+    }
+    
+    .notification.info::before {
+        background: rgba(10, 132, 255, 0.75);
+    }
+} 
+
+
+
+#progress-container {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 377px;
+    max-height: calc(100vh - 40px);
+    overflow-y: hidden;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-bar.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.progress-chrome {
+    background: rgba(255, 255, 255, 0.75);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-radius: 100px;
+    padding: 14px 16px;
+    border: 0.333px solid rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.progress-status {
+    font-size: 11px;
+    line-height: 1.181818;
+    letter-spacing: 0.00545455em;
+    color: #000000;
+    text-align: center;
+}
+
+.progress-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    position: absolute;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: #65558F;
+    border-radius: 2px;
+    transition: width 0.3s ease-out;
+}
+
+
+@media (prefers-color-scheme: dark) {
+    .progress-status {
+        color: #FFFFFF;
+    }
+
+    .progress-track {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .progress-fill {
+        background: #8E82D8;
+    }
+} 
+#textui-container {
+    position: fixed;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: auto;
+    text-align: right;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.textui {
+    width: auto;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.textui.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.textui-chrome {
+    background: rgba(15, 15, 15, 0.9);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.textui-key {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 1);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 28px;
+    text-align: center;
+    text-transform: uppercase;
+    border: none;
+}
+
+.textui-message {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+
+@media (prefers-color-scheme: dark) {
+    .notification::before {
+        background: rgba(58, 58, 60, 0.95);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .progress-chrome {
+        background: rgba(58, 58, 60, 0.95);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .textui-chrome {
+        background: rgba(15, 15, 15, 0.95);
+    }
+}
+
+
+.progress-bar.cancelled .progress-fill {
+    background: #ff3b30 !important;
+}
+
+.textui.disabled .textui-key {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.textui.disabled .textui-message {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+
+.textui.no-interact .textui-key {
+    display: none;
+}
