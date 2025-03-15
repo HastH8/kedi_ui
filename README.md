@@ -15,7 +15,7 @@ A modern, iOS-inspired UI system for FiveM servers featuring notifications, prog
 
 ### Notifications
 ```lua
-exports['ks_ui']:ShowNotification({
+exports['kedi_ui']:ShowNotification({
     type = 'success', -- 'success', 'error', 'warning', 'info'
     title = 'Title',
     message = 'Your message here',
@@ -26,7 +26,7 @@ exports['ks_ui']:ShowNotification({
 
 ### Progress Bar
 ```lua
-exports['ks_ui']:StartProgress({
+exports['kedi_ui']:StartProgress({
     label = 'Loading...',
     duration = 5000, -- milliseconds
     canCancel = true, -- allow cancellation with X key
@@ -44,15 +44,15 @@ exports['ks_ui']:StartProgress({
 })
 
 -- Update progress manually
-exports['ks_ui']:UpdateProgress(id, progress, label)
+exports['kedi_ui']:UpdateProgress(id, progress, label)
 
 -- End progress
-exports['ks_ui']:EndProgress(id)
+exports['kedi_ui']:EndProgress(id)
 ```
 
 ### Text UI
 ```lua
-exports['ks_ui']:ShowTextUI({
+exports['kedi_ui']:ShowTextUI({
     key = 'E',
     message = 'Open Door',
     duration = 5000, -- optional auto-hide
@@ -65,12 +65,12 @@ exports['ks_ui']:ShowTextUI({
 })
 
 -- Update text UI
-exports['ks_ui']:UpdateTextUI({
+exports['kedi_ui']:UpdateTextUI({
     message = 'New message'
 })
 
 -- Hide text UI
-exports['ks_ui']:HideTextUI()
+exports['kedi_ui']:HideTextUI()
 ```
 
 ## 🛠️ Test Commands
