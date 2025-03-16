@@ -25,7 +25,8 @@ function ShowNotification(data)
         message = data.message,
         duration = data.duration or Config.NotificationDefaults.duration,
         notificationType = data.type or 'info',
-        icon = data.icon,
+        icon = data.icon, -- This will now accept FontAwesome classes
+        useFA = data.icon and string.sub(data.icon, 1, 3) == "fa-", -- Check if it's a FontAwesome icon
         gameTime = GetGameTime()
     })
 end
