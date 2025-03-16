@@ -15,7 +15,7 @@ class NotificationSystem {
     }
 
     createNotificationElement(data) {
-        const { type = 'info', title, message, duration = 5000, icon = null, gameTime } = data;
+        const { type = 'info', title, message, duration = 5000, icon = null, useFA = false, gameTime } = data;
         const id = `notification-${++this.counter}`;
         
         const notificationEl = document.createElement('div');
@@ -28,9 +28,21 @@ class NotificationSystem {
             hour12: true 
         });
         
+        // Create icon content based on whether it's a FontAwesome icon or an image URL
+        let iconContent = '';
+        if (icon) {
+            if (useFA) {
+                // It's a FontAwesome icon
+                iconContent = `<i class="${icon}"></i>`;
+            } else {
+                // It's an image URL
+                iconContent = `<img src="${icon}" alt="">`;
+            }
+        }
+        
         notificationEl.innerHTML = `
             <div class="notification-app-icon">
-                ${icon ? `<img src="${icon}" alt="">` : ''}
+                ${iconContent}
             </div>
             <div class="notification-content">
                 <div class="notification-header">
@@ -40,7 +52,7 @@ class NotificationSystem {
                 <div class="notification-message">${message}</div>
             </div>
         `;
-
+    
         return { element: notificationEl, duration };
     }
 
@@ -102,6 +114,7 @@ class TextUISystem {
                     this.showTextUI(data);
                     break;
                 case 'hide':
+
                     const timeSinceShow = Date.now() - this.lastShowTime;
                     if (timeSinceShow < 300) {
                         setTimeout(() => this.hideTextUI(), 300 - timeSinceShow);
