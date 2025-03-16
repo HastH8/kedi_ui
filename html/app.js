@@ -87,8 +87,12 @@ class TextUISystem {
         this.container = document.getElementById('textui-container');
         this.currentTextUI = null;
         this.hideTimer = null;
+        this.isRemoving = false;
+        this.lastShowTime = 0;
+        this.pendingShow = null;
         window.addEventListener('message', this.handleMessage.bind(this));
     }
+
     handleMessage(event) {
         const data = event.data;
         
@@ -98,7 +102,12 @@ class TextUISystem {
                     this.showTextUI(data);
                     break;
                 case 'hide':
-                    this.hideTextUI();
+                    const timeSinceShow = Date.now() - this.lastShowTime;
+                    if (timeSinceShow < 300) {
+                        setTimeout(() => this.hideTextUI(), 300 - timeSinceShow);
+                    } else {
+                        this.hideTextUI();
+                    }
                     break;
                 case 'update':
                     this.updateTextUI(data);
@@ -122,18 +131,60 @@ class TextUISystem {
     
         return textUIEl;
     }
+
     showTextUI(data) {
+        if (this.pendingShow) {
+            clearTimeout(this.pendingShow);
+            this.pendingShow = null;
+        }
+
+        if (this.isRemoving) {
+            this.pendingShow = setTimeout(() => {
+                this.pendingShow = null;
+                this.showTextUI(data);
+            }, 350);
+            return;
+        }
+
         if (this.hideTimer) {
             clearTimeout(this.hideTimer);
             this.hideTimer = null;
         }
-        this.hideTextUI();
+
+        if (this.currentTextUI) {
+            const currentKey = this.currentTextUI.querySelector('.textui-key')?.textContent;
+            const currentMsg = this.currentTextUI.querySelector('.textui-message')?.textContent;
+            
+            if (currentKey === data.key && currentMsg === data.message) {
+                this.lastShowTime = Date.now();
+                return;
+            }
+            
+
+            this.hideTextUI();
+            this.pendingShow = setTimeout(() => {
+                this.pendingShow = null;
+                this.actuallyShowTextUI(data);
+            }, 350);
+        } else {
+            this.actuallyShowTextUI(data);
+        }
+    }
+
+    actuallyShowTextUI(data) {
         const element = this.createTextUIElement(data);
         this.container.appendChild(element);
+        
+
+        void element.offsetWidth;
+        
         requestAnimationFrame(() => {
             element.classList.add('show');
         });
+        
         this.currentTextUI = element;
+        this.lastShowTime = Date.now();
+        
         if (data.isDisabled) {
             element.classList.add('disabled');
         }
@@ -141,6 +192,7 @@ class TextUISystem {
         if (!data.canInteract) {
             element.classList.add('no-interact');
         }
+        
         if (data.duration) {
             this.hideTimer = setTimeout(() => {
                 this.hideTextUI();
@@ -154,30 +206,43 @@ class TextUISystem {
             return;
         }
 
-        const titleEl = this.currentTextUI.querySelector('.textui-title');
         const messageEl = this.currentTextUI.querySelector('.textui-message');
+        const keyEl = this.currentTextUI.querySelector('.textui-key');
         
-        if (data.title) titleEl.textContent = data.title;
-        if (data.message) messageEl.textContent = data.message;
+        if (data.message && messageEl) messageEl.textContent = data.message;
+        if (data.key && keyEl) keyEl.textContent = data.key;
+        
+
+        this.lastShowTime = Date.now();
     }
 
     hideTextUI() {
-        if (this.currentTextUI) {
-            this.currentTextUI.classList.remove('show');
-            this.currentTextUI.addEventListener('transitionend', () => {
-                this.currentTextUI.remove();
-                this.currentTextUI = null;
-            });
+        if (this.currentTextUI && !this.isRemoving) {
+            this.isRemoving = true;
+            
+            const element = this.currentTextUI;
+            this.currentTextUI = null;
+            
+            element.classList.remove('show');
+            setTimeout(() => {
+                if (element && element.parentNode) {
+                    element.parentNode.removeChild(element);
+                }
+                this.isRemoving = false;
+            }, 300);
         }
     }
 }
 
-
 const textUISystem = new TextUISystem();
+
 window.showTextUI = (data) => {
     textUISystem.showTextUI({
         key: data.key || 'E',
-        message: data.message || 'Interact'
+        message: data.message || 'Interact',
+        duration: data.duration,
+        isDisabled: data.isDisabled,
+        canInteract: data.canInteract !== false 
     });
 };
 
