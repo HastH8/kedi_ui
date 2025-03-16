@@ -59,13 +59,15 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 .notification-app-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 8.5px;
-    background: #333;
-    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px; /* Adjust as needed */
+    height: 40px; /* Adjust as needed */
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.1);
 }
-
 .notification-content {
     display: flex;
     flex-direction: column;
@@ -351,4 +353,35 @@ body {
 
 .textui.no-interact .textui-key {
     display: none;
+}
+
+.notification-app-icon i {
+    font-size: 20px; /* Adjust size as needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.notification-app-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+/* Type-specific icon colors */
+.notification.success .notification-app-icon i {
+    color: #2ecc71;
+}
+
+.notification.error .notification-app-icon i {
+    color: #e74c3c;
+}
+
+.notification.warning .notification-app-icon i {
+    color: #f39c12;
+}
+
+.notification.info .notification-app-icon i {
+    color: #3498db;
 }
